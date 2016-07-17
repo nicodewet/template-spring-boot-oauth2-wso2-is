@@ -25,4 +25,3 @@ Just use admin/admin to log in and you should be presented with a Hello World me
 Note, you'll see an issue relating the Principal in the DEBUG logs, this is a known issue, and a solution will be added here in time. For now though, at least you can log in and the integration works with minimal effort.
 
 Also, use Chrome or Firefox, you'll run into issues with Safari. More on this in time.
-you can log in.  
