@@ -7,6 +7,8 @@ security:
       clientSecret: j6TlbQ3UXvONmIZMVql5fuaTN_Ua
       scope: openid
       clientAuthenticationScheme: header
+      preEstablishedRedirectUri: http://localhost:8080/login
+      useCurrentUri: false
     resource:
       userInfoUri: https://localhost:9443/oauth2/userinfo?schema=openid
 spring:
