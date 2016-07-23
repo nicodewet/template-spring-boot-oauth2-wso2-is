@@ -1,8 +1,8 @@
 security:
   oauth2:
     client:
-      accessTokenUri: https://localhost:9443/oauth2/token
-      userAuthorizationUri: https://localhost:9443/oauth2/authorize
+      accessTokenUri: https://localhost:9444/oauth2/token
+      userAuthorizationUri: https://localhost:9444/oauth2/authorize
       clientId: LXphgIFoHC5qltrSrYzGwoGUs90a
       clientSecret: j6TlbQ3UXvONmIZMVql5fuaTN_Ua
       scope: openid
@@ -10,7 +10,7 @@ security:
       preEstablishedRedirectUri: http://localhost:8080/login
       useCurrentUri: false
     resource:
-      userInfoUri: https://localhost:9443/oauth2/userinfo?schema=openid
+      userInfoUri: https://localhost:9444/oauth2/userinfo?schema=openid
 spring:
   resources:
     chain:
