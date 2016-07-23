@@ -55,7 +55,9 @@ Always a good idea to sanity check your cacert file. In my case, I had deleted a
     $ mv cacerts /Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home/jre/lib/security/
 
 #### Terminal A: run mitmproxy
-    Nicos-Air:mitmproxy-0.17.1-osx nico$ ./mitmdump -p 9444 -R https://localhost:9443 
+    Nicos-Air:mitmproxy-0.17.1-osx nico$ ./mitmproxy -p 9444 -R https://localhost:9443 
+    
+Remember to quit mitmproxy simply press q and also that you must select an entry and then press Enter to see the HTML message detail (headers, request and response bodies).
 
 #### Terminal B: run wso2 is
     Nicos-Air:wso2is-5.1.0 nico$ ./bin/wso2server.sh
