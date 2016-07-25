@@ -95,5 +95,12 @@ Using Chrome for example, enter http://localhost:8080 to initiate the [OAuth2](h
 ### Principal issue
 Note, you'll see an issue relating the Principal in the DEBUG logs, this is a known issue, and a solution will be added here in time. For now though, at least you can log in and the integration works with minimal effort.
 
+To add to the effect of this issue, note that when using [Thymeleaf's Spring Security Extras](https://github.com/thymeleaf/thymeleaf-extras-springsecurity) integration module the value of the "name" property of the authentication object shows up as *unknown* out of the box. To see this in action log in and take note of the html depicted below.
+
+    <p>
+    Logged user: <span sec:authentication="name">Bob</span>
+    </p>
+
 ### Browser issue
+
 Use Chrome or Firefox, you'll run into issues with Safari. More on this in time.
