@@ -112,3 +112,8 @@ To add to the effect of this issue, note that when using [Thymeleaf's Spring Sec
 ### Browser issue
 
 Use Chrome or Firefox, you'll run into issues with Safari. More on this in time.
+
+## Technical References
+
+* [Thymeleaf + Spring Security integration basics](http://www.thymeleaf.org/doc/articles/springsecurity.html) - José Miguel Samper 
+* [Spring Security Documentation](http://static.springsource.org/spring-security/site/reference.html)

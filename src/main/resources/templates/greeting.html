@@ -8,7 +8,16 @@
 <body>
     <p th:text="'Hello, ' + ${name} + '!'" />
     <p>
-    Logged user: <span sec:authentication="name">Bob</span>
+        Logged user: <span sec:authentication="name">Bob</span>
     </p>
+    <p>
+        <span sec:authorize="isAnonymous()">If this renders then the user is not authorized and so is deemed to be anonymous</span>
+    </p>
+    <div sec:authorize="hasRole('ROLE_USER')">
+        This content is only shown to users with role ROLE_USER.
+    </div>
+    <div sec:authorize="hasRole('ROLE_ADMIN')">
+        This content is only shown to administrators with ROLE_ADMIN.
+    </div>
 </body>
 </html>
