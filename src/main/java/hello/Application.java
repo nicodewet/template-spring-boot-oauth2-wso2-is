@@ -11,12 +11,15 @@ import javax.servlet.Filter;
 import org.apache.catalina.filters.RequestDumperFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoRestTemplateCustomizer;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpRequest;
@@ -26,6 +29,7 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
+import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 
 @SpringBootApplication
 @EnableOAuth2Sso
@@ -35,6 +39,15 @@ public class Application {
 	
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
+    }
+    
+    @Autowired
+    private ResourceServerProperties sso;
+    
+    @Bean
+    @Primary
+    public ResourceServerTokenServices myUserInfoTokenServices() {
+        return new AppUserInfoTokenServices(sso.getUserInfoUri(), sso.getClientId());
     }
     
     @Bean
