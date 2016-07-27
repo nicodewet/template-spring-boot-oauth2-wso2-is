@@ -19,5 +19,10 @@
     <div sec:authorize="hasRole('ROLE_ADMIN')">
         This content is only shown to administrators with ROLE_ADMIN.
     </div>
+    <div sec:authorize="isAuthenticated()">
+        <form name="logoutForm" th:action="@{/logout}" method="post">
+            <input type="submit" value="Sign Out"/>
+        </form> 
+    </div>
 </body>
 </html>

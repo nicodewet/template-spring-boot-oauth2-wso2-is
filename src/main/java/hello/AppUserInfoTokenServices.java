@@ -53,18 +53,6 @@ public class AppUserInfoTokenServices implements ResourceServerTokenServices {
 		this.clientId = clientId;
 	}
 
-	public void setTokenType(String tokenType) {
-		this.tokenType = tokenType;
-	}
-
-	public void setRestTemplate(OAuth2RestOperations restTemplate) {
-		this.restTemplate = restTemplate;
-	}
-
-	public void setAuthoritiesExtractor(AuthoritiesExtractor authoritiesExtractor) {
-		this.authoritiesExtractor = authoritiesExtractor;
-	}
-
 	@Override
 	public OAuth2Authentication loadAuthentication(String accessToken)
 			throws AuthenticationException, InvalidTokenException {
