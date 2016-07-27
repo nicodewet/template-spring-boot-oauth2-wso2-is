@@ -33,15 +33,17 @@ As stated above this part is required for the web service calls to WSO2 IS in th
     Nicos-Air:security nico$ keytool -export -keystore wso2carbon.jks -alias wso2carbon -file wso2PubCert.cer
 
 **default password is wso2carbon**
-    Nicos-Air:security nico$ keytool -import -keystore cacerts -file wso2PubCert.cer
+
+    Nicos-Air:security nico$ sudo keytool -import -keystore $JAVA_HOME/jre/lib/security/cacerts -file wso2PubCert.cer
 
 **default password is changeit**
-    Nicos-Air:security nico$ keytool -list -keystore cacerts
+
+    Nicos-Air:security nico$ sudo keytool -list -keystore $JAVA_HOME/jre/lib/security/cacerts
 
 At this stage, if you change all the port references in application.yml to 9443 you should be able to authenticate using WSO2 IS when using the credentials admin/admin.
 
 ### Import mitmproxy ca cert
-    Nicos-Air:security nico$ keytool -import -trustcacerts -alias mitmproxy-ca -file ~/.mitmproxy/mitmproxy-ca-cert.cer -keystore cacerts -storepass changeit
+    Nicos-Air:security nico$ sudo keytool -import -trustcacerts -alias mitmproxy-ca -file ~/.mitmproxy/mitmproxy-ca-cert.cer -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass changeit
 
 At this stage, you'll be able to run mitmproxy as a man-in-the-middle proxy for debugging purposes. 
 
@@ -52,9 +54,12 @@ member to a project so you can step through the message flows.
 This is a setup to run WSO2 IS 5.1.0, mitmproxy in reverse proxy mode and then also the Spring Boot application.
 
 ### cacerts sanity check
-Always a good idea to sanity check your cacert file. In my case, I had deleted an old file (forgot the password) and realized that I needed to do this:
+Given that we've specified $JAVA_HOME/jre/lib/security/cacerts as our cacerts file and also that you'll be running the Spring Boot app from your IDE, the first thing to do is 
+to make sure that you are using the same JVM.
 
-    $ mv cacerts /Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home/jre/lib/security/
+In addition, you can always grep for the newly added cacerts as follows:
+
+    $ sudo keytool -list -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass changeit | grep mitmproxy
 
 #### Part 1: run mitmproxy from terminal
     Nicos-Air:mitmproxy-0.17.1-osx nico$ ./mitmproxy -p 9444 -R https://localhost:9443
@@ -108,6 +113,9 @@ To add to the effect of this issue, note that when using [Thymeleaf's Spring Sec
     <p>
     Logged user: <span sec:authentication="name">Bob</span>
     </p>
+
+#### Principal issue fix
+The fix is surprisingly easy, but thats said in hindsight. All you have to do is to copy class UserInfoTokenServices from GitHub, then add "sub" to the PRINCIPAL_KEYS array. See class AppUserInfoTokenServices.java.
 
 ### Browser issue
 
