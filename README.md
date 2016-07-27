@@ -115,7 +115,14 @@ To add to the effect of this issue, note that when using [Thymeleaf's Spring Sec
     </p>
 
 #### Principal issue fix
-The fix is surprisingly easy, but thats said in hindsight. All you have to do is to copy class UserInfoTokenServices from GitHub, then add "sub" to the PRINCIPAL_KEYS array. See class AppUserInfoTokenServices.java.
+The fix is surprisingly easy, but thats said in hindsight. All you have to do is to copy class UserInfoTokenServices from GitHub, then add "sub" to the PRINCIPAL_KEYS array. See class AppUserInfoTokenServices.java. With this fix in place, when 
+you log in your'll see:
+
+    Hello, World!
+
+    Logged user: admin@carbon.super
+
+    This content is only shown to users with role ROLE_USER.
 
 ### Browser issue
 
