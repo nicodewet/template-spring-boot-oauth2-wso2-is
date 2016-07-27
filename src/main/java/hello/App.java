@@ -26,12 +26,16 @@ import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 @SpringBootApplication
 @EnableOAuth2Sso
-public class App {
+public class App extends WebSecurityConfigurerAdapter {
 
 	private static final Logger logger = LoggerFactory.getLogger(App.class);
 	
@@ -47,6 +51,17 @@ public class App {
     public ResourceServerTokenServices myUserInfoTokenServices() {
         return new AppUserInfoTokenServices(sso.getUserInfoUri(), sso.getClientId());
     }
+    
+    // see: https://spring.io/guides/tutorials/spring-boot-oauth2/#_social_login_logout
+    @Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.antMatcher("/**")
+			.authorizeRequests()
+				.antMatchers("/", "/login**", "/webjars/**").permitAll()
+				.anyRequest().authenticated()
+			.and().logout().logoutSuccessUrl("/").permitAll()
+			.and().csrf().csrfTokenRepository(new HttpSessionCsrfTokenRepository());
+	}
     
     @Bean
     public FilterRegistrationBean requestDumperFilter() {

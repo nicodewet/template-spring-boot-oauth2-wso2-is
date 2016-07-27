@@ -6,6 +6,14 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
+    <div sec:authorize="isAnonymous()">
+       <a th:href="@{/login}">Login</a>
+    </div>
+    <div sec:authorize="isAuthenticated()">
+        <form name="logoutForm" th:action="@{/logout}" method="post">
+            <input type="submit" value="Sign Out"/>
+        </form> 
+    </div>
     <p th:text="'Hello, ' + ${name} + '!'" />
     <p>
         Logged user: <span sec:authentication="name">Bob</span>
@@ -18,11 +26,6 @@
     </div>
     <div sec:authorize="hasRole('ROLE_ADMIN')">
         This content is only shown to administrators with ROLE_ADMIN.
-    </div>
-    <div sec:authorize="isAuthenticated()">
-        <form name="logoutForm" th:action="@{/logout}" method="post">
-            <input type="submit" value="Sign Out"/>
-        </form> 
     </div>
 </body>
 </html>
