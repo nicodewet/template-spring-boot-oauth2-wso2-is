@@ -1,8 +1,7 @@
 # template-spring-boot-oauth2-wso2-is
 Template Spring Boot project with OAuth2 proven to work with WSO2 IS 5.1.0
 
-We use the simplest possible security setup meaning that getting served anything from the web application requires authentication. This approach
-may also be the easiest to maintain in the long run.
+We use the simplest possible security setup which naturally inludes login and also local logout.
 
 ## Setup
 On your local, download and unzip wso2is-5.1.0, then cd wso2is-5.1.0 and $ ./bin/wso2server.sh
