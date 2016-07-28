@@ -95,7 +95,7 @@ in sequence and so it's easiest to also pass **userAuthorizationUri** traffic th
 #### Part 4: initiate login using browser
 Using Chrome for example, enter http://localhost:8080 to initiate the [OAuth2](https://tools.ietf.org/html/rfc6749) Authorization Code Flow.
 
-## Known issues
+## Known issues and fixes
 
 ### Principal issue
 Note, you'll see an issue relating the Principal in the DEBUG logs with the Principal appearing as unknown.
@@ -123,6 +123,50 @@ you log in your'll see:
     Logged user: admin@carbon.super
 
     This content is only shown to users with role ROLE_USER.
+
+### Local logout issue
+
+Once a stock standard Spring Security logout process has been put in place with a POST to /logout and hidden CSRF fields you'd
+expect that you're all done.
+
+In fact, you'll soon notice that once you have logged out as far as Spring Security is concerned this is short lived and taking
+a close look at your mitmproxy traffic with repeated Login / Logout clicks will show you why or at least indicate why.
+
+First of all, each time you click Login, you'll notice the typical OAuth2 / OpenID Connect *dance* with a sequence of three HTTP request / response pairs:
+
+    GET https://localhost:9443/oauth2/authorize?client_id=LXphgIFoHC5qltrSrYzGwoGUs90a&redirect_uri=http:/
+       /localhost:8080/login&response_type=code&scope=openid&state=bYvf1G
+       ← 302 [no content] 77ms
+    POST https://localhost:9443/oauth2/token
+        ← 200 application/json 700B 29ms
+    GET https://localhost:9443/oauth2/userinfo?schema=openid
+       ← 200 application/json 28B 45ms
+
+At the end of the third exchange your user is logged in again, this is no good since it means you don't have local logout.
+
+So, in terms of why, the astute reader may already start suspecting a server-side cookie send from the client to the server in the first request / response pair, and thats exactly what is happening:
+
+    Cookie: JSESSIONID=72C10AE56C8EC753B9C08FD98E5A6F9C76712DACF97411B17A466F3473BE526E
+            B8C848BDC652175F1B033A428C38C685824FDBAABDE550720B81DDA69C3F7FBEF873E865492
+            52C9FFDE368D290E416FD1E5F2097AD9EFD4C1A30EFA47F9D29954E1DF188C11DA8A2A475B7
+            6ABFD3A43C7D258F67C1DEACF9C44DAC4382F5919D; menuPanel=visible;             
+            menuPanelType=main; commonAuthId=d8023506-d236-48d6-a3cd-b0e1edec99fd;     
+            JSESSIONID=C65F528E895D110B3A208EB88D1B4148
+
+The *commonAuthId* cookie is the culprit here. According to [this article](http://xacmlinfo.org/2015/10/15/how-to-configure-session-time-out-in-wso2-identity-server-wso2is/) WSO2 IS creates an SSO session for each end user and a *commonAuthId* cookie associated with the said session. 
+
+Now, please refer to the referenced article for concerns other than logging out, I'll just focus on this immediate issue.
+
+At the time of writing the accepted answer to [How to destroy authentication session in WSO2 Identity Server?](http://stackoverflow.com/questions/29963787/how-to-destroy-authentication-session-in-wso2-identity-server) is to:
+
+* send a request to the /commonauth WSO2 IS endpoint with query parameter commonAuthLogout=true
+
+As per [this article](http://xacmlinfo.org/2015/01/08/openid-connect-identity-server/) here is a full example that is specific to WSO2 IS 5.1.0:
+
+    https://localhost:9443/commonauth?commonAuthLogout=true&type=oidc&commonAuthCallerPath=http://localhost:8080/openidconnect/oauth2client&relyingParty=OpenidConnectWebapp
+
+* commonAuthCallerPath is the redirection url
+* relyingParty is registered Service Provider application name which is registered in the WSO2 IS 5.1.0
 
 ### Browser issue
 

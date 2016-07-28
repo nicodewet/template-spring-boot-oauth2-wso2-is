@@ -60,7 +60,7 @@ public class AppUserInfoTokenServices implements ResourceServerTokenServices {
 			throws AuthenticationException, InvalidTokenException {
 		Map<String, Object> map = getMap(this.userInfoEndpointUrl, accessToken);
 		if (map.containsKey("error")) {
-			this.logger.debug("userinfo returned error: " + map.get("error"));
+			this.logger.info("userinfo returned error: " + map.get("error"));
 			throw new InvalidTokenException(accessToken);
 		}
 		return extractAuthentication(map);
@@ -100,7 +100,7 @@ public class AppUserInfoTokenServices implements ResourceServerTokenServices {
 
 	@SuppressWarnings({ "unchecked" })
 	private Map<String, Object> getMap(String path, String accessToken) {
-		this.logger.info("Getting user info from: " + path);
+		this.logger.info("Getting user info from {} with access token {}", path, accessToken);
 		try {
 			OAuth2RestOperations restTemplate = this.restTemplate;
 			if (restTemplate == null) {
@@ -114,7 +114,14 @@ public class AppUserInfoTokenServices implements ResourceServerTokenServices {
 				DefaultOAuth2AccessToken token = new DefaultOAuth2AccessToken(
 						accessToken);
 				token.setTokenType(this.tokenType);
+				logger.info("==========================================================");
+				logger.info("USER INFO FETCH, using NEW access token: {}", accessToken);
+				logger.info("==========================================================");
 				restTemplate.getOAuth2ClientContext().setAccessToken(token);
+			} else {
+				logger.info("==========================================================");
+				logger.info("USER INFO FETCH, using EXISTING access token: {}", existingToken.getValue());
+				logger.info("==========================================================");
 			}
 			return restTemplate.getForEntity(path, Map.class).getBody();
 		}
