@@ -1,27 +1,31 @@
 # template-spring-boot-oauth2-wso2-is
 Template Spring Boot project with OAuth2 proven to work with WSO2 IS 5.1.0
 
-We use the simplest possible security setup which naturally inludes login and also local logout.
+I use the simplest possible security setup which naturally inludes login and also local logout.
 
 ## Setup
-On your local, download and unzip wso2is-5.1.0, then cd wso2is-5.1.0 and $ ./bin/wso2server.sh
+On your local, download and unzip wso2is-5.1.0, then start it up as follows: 
 
-Now, once WSO2 IS is up and running, navigate to https://localhost:9443/carbon/, login with admin/admin and set up a service provider. Just call it 
+    $ cd wso2is-5.1.0
+    $ ./bin/wso2server.sh
+
+Now, once WSO2 IS is up and running, navigate to https://localhost:9443/carbon/, login with admin/admin and set up a Service Provider. Just call it 
 localhost, then move onto Inbound Authentication Configuration and move down to OAuth/OpenID Connect Configuration. An OAuth Client Key and an OAuth
 Client Secret will get generated for you, then as callback URL enter http://localhost:8080/login
+
+As an aside, you may wonder, looking at the code, and AppController in particular where on earth **login** comes from. This path
+comes from auto-configuration magic (where exactly I cannot recall at the time of writing) and Spring Security looks out for requests to it in it's plethora of HTTP filters.
 
 At this stage you should be good to go appart from having to import the WSO2 IS self-signed certificate into your JVM truststore (to establish a chain 
 of trust). If you don't do this your SSL handshake will fail when "backchannel" (web service) requests are made to WSO2 IS endpoints. See the section 
 *Adding WSO2 IS public certificate to Java Certificate Store* on how to do this.
 
 Once the WSO2 IS self-signed certificate import has been done you can right click on Application in your IDE and select Run As, then Java Application. Just
-make sure your JVM is that you'll run with is the one with the self-signed certs added to its trust store.
+make sure your JVM that you'll run with is the one with the self-signed certs added to its trust store.
 
 Just use admin/admin to log in and you should be presented with a Hello World message.
 
-In terms of setup, in my experience at some stage you may be banging your head against a *why-is-this-not-working* wall when it comes to OAuth 2 / OpenID Connect. In this
-case, its useful to have clear visibility over all traffic when in *debug* mode. In this case, the use of mitmproxy becomes a useful, if not essential tool for 
-HTTPS traffic interception.
+In terms of setup, in my experience at some stage you may be banging your head against a *why-is-this-not-working* wall when it comes to OAuth 2 / OpenID Connect. To prevent the said head banging, its useful to have clear visibility over all traffic when in *debug* mode. In a way this goes without saying but it's easy to forget once you venture outside the familiar bounds on your IDE. When it comes to visiblity over all traffic, the use of mitmproxy becomes a useful, if not essential tool for HTTPS traffic interception.
 
 ### Adding WSO2 IS public certificate to Java Certificate Store
 As stated above this part is required for the web service calls to WSO2 IS in the [OAuth2](https://tools.ietf.org/html/rfc6749) Authorization Code Flow.
@@ -128,7 +132,7 @@ you log in your'll see:
 Once a stock standard Spring Security logout process has been put in place with a POST to /logout and hidden CSRF fields you'd
 expect that you're all done.
 
-In fact, you'll soon notice that once you have logged out as far as Spring Security is concerned this is short lived and taking
+In fact, you'll soon notice that once you have logged out as far as Spring Security is concerned this is short lived. Taking
 a close look at your mitmproxy traffic with repeated Login / Logout clicks will show you why or at least indicate why.
 
 First of all, each time you click Login, you'll notice the typical OAuth2 / OpenID Connect *dance* with a sequence of three HTTP request / response pairs:
@@ -143,7 +147,7 @@ First of all, each time you click Login, you'll notice the typical OAuth2 / Open
 
 At the end of the third exchange your user is logged in again, this is no good since it means you don't have local logout.
 
-So, in terms of why, the astute reader may already start suspecting a server-side cookie send from the client to the server in the first request / response pair, and thats exactly what is happening:
+So, in terms of *why*, the astute reader may already start suspecting a server-side cookie sent from the client to the server in the first request / response pair, and thats exactly what is happening:
 
     Cookie: JSESSIONID=72C10AE56C8EC753B9C08FD98E5A6F9C76712DACF97411B17A466F3473BE526E
             B8C848BDC652175F1B033A428C38C685824FDBAABDE550720B81DDA69C3F7FBEF873E865492
@@ -152,20 +156,20 @@ So, in terms of why, the astute reader may already start suspecting a server-sid
             menuPanelType=main; commonAuthId=d8023506-d236-48d6-a3cd-b0e1edec99fd;     
             JSESSIONID=C65F528E895D110B3A208EB88D1B4148
 
-The *commonAuthId* cookie is the culprit here. According to [this article](http://xacmlinfo.org/2015/10/15/how-to-configure-session-time-out-in-wso2-identity-server-wso2is/) WSO2 IS creates an SSO session for each end user and a *commonAuthId* cookie associated with the said session. 
+The *commonAuthId* cookie is the culprit here. According to [this article](http://xacmlinfo.org/2015/10/15/how-to-configure-session-time-out-in-wso2-identity-server-wso2is/) WSO2 IS creates an SSO session for each end user and a *commonAuthId* cookie is associated with the said session. 
 
 Now, please refer to the referenced article for concerns other than logging out, I'll just focus on this immediate issue.
 
 At the time of writing the accepted answer to [How to destroy authentication session in WSO2 Identity Server?](http://stackoverflow.com/questions/29963787/how-to-destroy-authentication-session-in-wso2-identity-server) is to:
 
-* send a request to the /commonauth WSO2 IS endpoint with query parameter commonAuthLogout=true
+* send a request to the /commonauth WSO2 IS endpoint with query parameter **commonAuthLogout=true**
 
 As per [this article](http://xacmlinfo.org/2015/01/08/openid-connect-identity-server/) here is a full example that is specific to WSO2 IS 5.1.0:
 
     https://localhost:9443/commonauth?commonAuthLogout=true&type=oidc&commonAuthCallerPath=http://localhost:8080/openidconnect/oauth2client&relyingParty=OpenidConnectWebapp
 
-* commonAuthCallerPath is the redirection url
-* relyingParty is registered Service Provider application name which is registered in the WSO2 IS 5.1.0
+* **commonAuthCallerPath** is the redirection url
+* **relyingParty** is registered Service Provider application name which is registered in the WSO2 IS 5.1.0
 
 ### Browser issue
 
