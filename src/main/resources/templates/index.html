@@ -1,31 +1,52 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org"
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head> 
-    <title>Getting Started: Serving Web Content</title> 
+     
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <title>Template Spring Boot OAuth2 WSO2 IS</title>
+    
+    <link href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.7/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"
+          rel="stylesheet" media="screen" />
+    <script src="http://cdn.jsdelivr.net/webjars/jquery/1.11.1/jquery.min.js"
+            th:src="@{/webjars/jquery/1.11.1/jquery.min.js}"></script>
+    <script src="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.7/js/bootstrap.min.js"
+            th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
 </head>
 <body>
-    <div sec:authorize="isAnonymous()">
-       <a th:href="@{/login}">Login</a>
+   
+    <div class="container">
+        <div sec:authorize="isAnonymous()">
+            <a class="btn btn-primary" th:href="@{/login}" role="button">Login</a>
+        </div>
+        <div sec:authorize="isAuthenticated()">
+            <a class="btn btn-primary" th:href="@{https://localhost:9443/commonauth?commonAuthLogout=true&amp;type=oid&amp;commonAuthCallerPath=http://localhost:8080/logout&amp;relyingParty=localhost}">
+            Logout</a>
+        </div>
+        <p th:text="'Hello, ' + ${name} + '!'" />
+        <p>
+            Logged user: <span sec:authentication="name">Bob</span>
+       </p>
+        <p>
+            <span sec:authorize="isAnonymous()">If this renders then the user is not authorized and so is deemed to be anonymous</span>
+        </p>
+        <div sec:authorize="hasRole('ROLE_USER')">
+            This content is only shown to users with role ROLE_USER.
+        </div>
+        <div sec:authorize="hasRole('ROLE_ADMIN')">
+            This content is only shown to administrators with ROLE_ADMIN.
+        </div>
     </div>
-    <div sec:authorize="isAuthenticated()">
-        <form name="logoutForm" th:action="@{/logout}" method="post">
-            <input type="submit" value="Sign Out"/>
-        </form> 
-    </div>
-    <p th:text="'Hello, ' + ${name} + '!'" />
-    <p>
-        Logged user: <span sec:authentication="name">Bob</span>
-    </p>
-    <p>
-        <span sec:authorize="isAnonymous()">If this renders then the user is not authorized and so is deemed to be anonymous</span>
-    </p>
-    <div sec:authorize="hasRole('ROLE_USER')">
-        This content is only shown to users with role ROLE_USER.
-    </div>
-    <div sec:authorize="hasRole('ROLE_ADMIN')">
-        This content is only shown to administrators with ROLE_ADMIN.
-    </div>
+    <script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+
+    });
+    /*]]>*/
+    </script>
 </body>
 </html>

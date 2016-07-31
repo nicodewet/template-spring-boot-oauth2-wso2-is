@@ -30,7 +30,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
-import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 @SpringBootApplication
@@ -63,14 +62,14 @@ public class App extends WebSecurityConfigurerAdapter {
 			.and().csrf().csrfTokenRepository(new HttpSessionCsrfTokenRepository());
 	}
     
-    @Bean
-    public FilterRegistrationBean requestDumperFilter() {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
-        Filter requestDumperFilter = new RequestDumperFilter();
-        registration.setFilter(requestDumperFilter);
-        registration.addUrlPatterns("/*");
-        return registration;
-    }
+//    @Bean
+//    public FilterRegistrationBean requestDumperFilter() {
+//        FilterRegistrationBean registration = new FilterRegistrationBean();
+//        Filter requestDumperFilter = new RequestDumperFilter();
+//        registration.setFilter(requestDumperFilter);
+//        registration.addUrlPatterns("/*");
+//        return registration;
+//    }
     
     @Bean
     public UserInfoRestTemplateCustomizer restTemplateCustomizer() {

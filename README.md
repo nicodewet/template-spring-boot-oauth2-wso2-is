@@ -164,9 +164,9 @@ At the time of writing the accepted answer to [How to destroy authentication ses
 
 * send a request to the /commonauth WSO2 IS endpoint with query parameter **commonAuthLogout=true**
 
-As per [this article](http://xacmlinfo.org/2015/01/08/openid-connect-identity-server/) here is a full example that is specific to WSO2 IS 5.1.0:
+As per [this article](http://xacmlinfo.org/2015/01/08/openid-connect-identity-server/) here is a full example that is specific to WSO2 IS 5.1.0 and our localhost setup:
 
-    https://localhost:9443/commonauth?commonAuthLogout=true&type=oidc&commonAuthCallerPath=http://localhost:8080/openidconnect/oauth2client&relyingParty=OpenidConnectWebapp
+    https://localhost:9443/commonauth?commonAuthLogout=true&type=oidc&commonAuthCallerPath=http://localhost:8080/login&relyingParty=localhost
 
 * **commonAuthCallerPath** is the redirection url
 * **relyingParty** is registered Service Provider application name which is registered in the WSO2 IS 5.1.0
