@@ -24,10 +24,9 @@
             <a class="btn btn-primary" th:href="@{/login}" role="button">Login</a>
         </div>
         <div sec:authorize="isAuthenticated()">
-            <a class="btn btn-primary" th:href="@{https://localhost:9443/commonauth?commonAuthLogout=true&amp;type=oid&amp;commonAuthCallerPath=http://localhost:8080/logout&amp;relyingParty=localhost}">
+            <a class="btn btn-primary" th:href="@{${wso2SessionTerminateUrl}}">
             Logout</a>
         </div>
-        <p th:text="'Hello, ' + ${name} + '!'" />
         <p>
             Logged user: <span sec:authentication="name">Bob</span>
        </p>
