@@ -12,34 +12,68 @@
     <link href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.7/css/bootstrap.min.css"
           th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"
           rel="stylesheet" media="screen" />
-    <script src="http://cdn.jsdelivr.net/webjars/jquery/1.11.1/jquery.min.js"
-            th:src="@{/webjars/jquery/1.11.1/jquery.min.js}"></script>
-    <script src="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.7/js/bootstrap.min.js"
-            th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+    
 </head>
 <body>
    
     <div class="container">
-        <div sec:authorize="isAnonymous()">
-            <a class="btn btn-primary" th:href="@{/login}" role="button">Login</a>
-        </div>
-        <div sec:authorize="isAuthenticated()">
-            <a class="btn btn-primary" th:href="@{${wso2SessionTerminateUrl}}">
-            Logout</a>
-        </div>
+
+      <!-- Static navbar -->
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Template App</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="#">Home</a></li>
+            </ul>
+            <ul class="nav navbar-right">
+              
+              <li><a sec:authorize="isAnonymous()" class="btn btn-primary btn-navbar" th:href="@{/login}" role="button">Login</a>
+              <a sec:authorize="isAuthenticated()" class="btn btn-primary btn-navbar" th:href="@{${wso2SessionTerminateUrl}}">Logout</a></li>
+              
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+      </nav>
+
+      <!-- Main component for a primary marketing message or call to action -->
+      <div class="jumbotron">
+        <h1>Spring Boot Template App</h1>
+        <p>This template application contains all you need to integrate Spring Boot with WSO2 Identity Server 5.1.0 with basic Login and Logout actions.</p>
         <p>
-            Logged user: <span sec:authentication="name">Bob</span>
+            Logged in user: <span sec:authentication="name">Bob</span>
        </p>
         <p>
             <span sec:authorize="isAnonymous()">If this renders then the user is not authorized and so is deemed to be anonymous</span>
         </p>
-        <div sec:authorize="hasRole('ROLE_USER')">
+        <p sec:authorize="hasRole('ROLE_USER')">
             This content is only shown to users with role ROLE_USER.
-        </div>
-        <div sec:authorize="hasRole('ROLE_ADMIN')">
+        </p>
+        <p sec:authorize="hasRole('ROLE_ADMIN')">
             This content is only shown to administrators with ROLE_ADMIN.
-        </div>
-    </div>
+        </p>
+        <p>
+          <a class="btn btn-lg btn-primary" href="https://github.com/nicodewet/template-spring-boot-oauth2-wso2-is" role="button">View template project docs &raquo;</a>
+        </p>
+      </div>
+
+    </div> <!-- /container -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="http://cdn.jsdelivr.net/webjars/jquery/1.11.1/jquery.min.js"
+            th:src="@{/webjars/jquery/1.11.1/jquery.min.js}"></script>
+    <script src="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.7/js/bootstrap.min.js"
+            th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
     <script th:inline="javascript">
     /*<![CDATA[*/
     $(document).ready(function() {
