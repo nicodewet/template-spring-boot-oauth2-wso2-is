@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -18,11 +19,12 @@ public class AppController {
 	
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
-	private static final String WSO2_SESSION_TERMINATE_URL = "https://localhost:9443/commonauth?commonAuthLogout=true&type=oid&commonAuthCallerPath=http://localhost:8080/logout&relyingParty=localhost";
+	@Value("${wso2SessionTerminateUrl}")
+	private String wso2SessionTerminateUrl;
 	
     @RequestMapping("/")
     public String greeting(Model model) {
-        model.addAttribute("wso2SessionTerminateUrl", WSO2_SESSION_TERMINATE_URL);
+        model.addAttribute("wso2SessionTerminateUrl", wso2SessionTerminateUrl);
         return "index";
     }
     
