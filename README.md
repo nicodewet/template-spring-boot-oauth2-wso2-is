@@ -176,11 +176,10 @@ Now, in terms of implementing the WSO2 IS *commonAuth* logout as well as plain v
 
 #### Combining WSO2 IS commonAuth and Spring Security Logout
 
-Our design is as follows. 
+The design is as follows. 
 
-Given that the commonAuthId cookie is associated with the WSO2 IS server, our Javascript will not have access to it, so, we can add a **LOGOUT** hyperlink to our html that will only show when our thymeleaf-extras-springsecurity4 config says its ok to do so (sec:authorize="isAuthenticated()"). The above leaves a question, and that is how will we perfrom the stock standard Spring Security logout process? The default way to do this is to add a form with hidden csrf attributes. The answer that I've come up with is that the **commonAuthCallerPath** dictates where the browser will be directed to (HTTP 302 response by WSO2 IS), so you 
-can just redirect to your own Controller method that is only available to authenticated users, this method, called logout in 
-AppController.java peforms server-side logout and redirects to index.html where the stock standard thymeleaf-extras-springsecurity4 config will let the user know that they are logged out.
+Given that the commonAuthId cookie is associated with the WSO2 IS server, the index.html Javascript will not have access to it, so, I have added a **LOGOUT** hyperlink to index.html that will only show when our thymeleaf-extras-springsecurity4 config says its ok to do so (sec:authorize="isAuthenticated()"). The above leaves a question, and that is how will the stock standard Spring Security logout process happen? The default way to do this is to add a form with hidden csrf attributes. The answer that I've come up with is that the **commonAuthCallerPath** dictates where the browser will be directed to (HTTP 302 response by WSO2 IS), so one can simply redirect to a Controller method that is only available to authenticated users. This method, called *logout* in 
+AppController.java performs server-side logout and redirects to index.html where the stock standard thymeleaf-extras-springsecurity4 config will let the user know that they are logged out.
 
 ### Browser issue
 
