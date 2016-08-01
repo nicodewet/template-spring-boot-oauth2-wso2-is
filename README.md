@@ -106,13 +106,13 @@ Note, you'll see an issue relating the Principal in the DEBUG logs with the Prin
 
     SecurityContext 'org.springframework.security.core.context.SecurityContextImpl@fbdb8794: Authentication: org.springframework.security.oauth2.provider.OAuth2Authentication@fbdb8794: Principal: unknown; Credentials: [PROTECTED]; Authenticated: true; Details: remoteAddress=0:0:0:0:0:0:0:1, sessionId=<SESSION>, tokenType=BearertokenValue=<TOKEN>; Granted Authorities: ROLE_USER' stored to HttpSession: 'org.apache.catalina.session.StandardSessionFacade@2f54bded
 
-This is a known issue that stems from a [WSO2 IS 5.1.0 bug](https://wso2.org/jira/browse/IDENTITY-4250) and a workaround will be added here in time. The bug relates to the response to the HTTP GET request to https://localhost:9444/oauth2/userinfo?schema=openid appearing as follows in the response body.
+This is a known issue that stems from a [WSO2 IS 5.1.0 bug](https://wso2.org/jira/browse/IDENTITY-4250) and a workaround is included in AppUserInfoTokenservices.java. The bug relates to the response to the HTTP GET request to https://localhost:9444/oauth2/userinfo?schema=openid appearing as follows in the response body.
 
     {"sub":"nicodewet@carbon.super"}
 
-For now though, at least you can log in and know that the integration partially works with minimal effort.
+Without the workaround in place, at this stage at least you can log in and know that the integration partially works with minimal effort.
 
-To add to the effect of this issue, note that when using [Thymeleaf's Spring Security Extras](https://github.com/thymeleaf/thymeleaf-extras-springsecurity) integration module the value of the "name" property of the authentication object shows up as *unknown* out of the box. To see this in action log in and take note of the html depicted below.
+To add to the effect of this issue, note that when using [Thymeleaf's Spring Security Extras](https://github.com/thymeleaf/thymeleaf-extras-springsecurity) integration module the value of the "name" property of the authentication object shows up as *unknown* out of the box. To see this in action, introduce a regression by removing the "sub" key from the PRINCIPAL_KEYS array in AppUserInfoTokenServices, log in and take note of the html depicted below.
 
     <p>
     Logged user: <span sec:authentication="name">Bob</span>
