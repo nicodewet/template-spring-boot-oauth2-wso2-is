@@ -18,31 +18,20 @@
    
     <div class="container">
 
-      <!-- Static navbar -->
       <nav class="navbar navbar-default">
         <div class="container-fluid">
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">Template App</a>
-          </div>
-          <div id="navbar" class="navbar-collapse collapse">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Template App</a>
+            </div>
             <ul class="nav navbar-nav">
-              <li class="active"><a href="#">Home</a></li>
+                <li class="active"><a href="#">Home</a></li>
             </ul>
             <ul class="nav navbar-right">
-              
-              <li><a sec:authorize="isAnonymous()" class="btn btn-primary btn-navbar" th:href="@{/login}" role="button">Login</a>
-              <a sec:authorize="isAuthenticated()" class="btn btn-primary btn-navbar" th:href="@{${wso2SessionTerminateUrl}}">Logout</a></li>
-              
+                <li sec:authorize="isAnonymous()"><a th:href="@{/login}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                <li sec:authorize="isAuthenticated()"><a th:href="@{${wso2SessionTerminateUrl}}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
             </ul>
-          </div><!--/.nav-collapse -->
-        </div><!--/.container-fluid -->
-      </nav>
+        </div>
+       </nav>
 
       <!-- Main component for a primary marketing message or call to action -->
       <div class="jumbotron">
