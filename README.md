@@ -25,7 +25,7 @@ make sure your JVM that you'll run with is the one with the self-signed certs ad
 
 Just use admin/admin to log in and you should be presented with a Hello World message.
 
-In terms of setup, in my experience at some stage you may be banging your head against a *why-is-this-not-working* wall when it comes to OAuth 2 / OpenID Connect. To prevent the said head banging, its useful to have clear visibility over all traffic when in *debug* mode. In a way this goes without saying but it's easy to forget once you venture outside the familiar bounds on your IDE. When it comes to visiblity over all traffic, the use of mitmproxy becomes a useful, if not essential tool for HTTPS traffic interception.
+In terms of setup, in my experience at some stage you may be banging your head against a *why-is-this-not-working* wall when it comes to OAuth 2 / OpenID Connect. To prevent the said head banging, its useful to have clear visibility over all traffic when in *debug* mode. In a way this goes without saying but it's easy to forget once you venture outside the familiar bounds on your IDE. When it comes to visiblity over all traffic, the use of mitmproxy becomes a useful and perhaps an essential tool for HTTPS traffic interception.
 
 ### Adding WSO2 IS public certificate to Java Certificate Store
 As stated above this part is required for the web service calls to WSO2 IS in the [OAuth2](https://tools.ietf.org/html/rfc6749) Authorization Code Flow.
@@ -89,7 +89,8 @@ Note the application.yml configuration:
           preEstablishedRedirectUri: http://localhost:8080/login
           useCurrentUri: false
         resource:
-          userInfoUri: https://localhost:9444/oauth2/userinfo?schema=openid 
+          userInfoUri: https://localhost:9444/oauth2/userinfo?schema=openid
+    wso2SessionTerminateUrl: https://localhost:9443/commonauth?commonAuthLogout=true&type=oid&commonAuthCallerPath=http://localhost:8080/logout&relyingParty=localhost
 
 In terms of endpoints that you want to pass through mitmproxy, the **accessTokenUri** and **userInfoUri** are the most important since you'll be able to 
 see pertinent *userAuthorizationUri* traffic in your browser debug console. That said, the mitmproxy view keeps all the traffic in one window with messages
@@ -170,6 +171,16 @@ As per [this article](http://xacmlinfo.org/2015/01/08/openid-connect-identity-se
 
 * **commonAuthCallerPath** is the redirection url
 * **relyingParty** is registered Service Provider application name which is registered in the WSO2 IS 5.1.0
+
+Now, in terms of implementing the WSO2 IS *commonAuth* logout as well as plain vanilla Spring Security logout, this has been detailed in the next section which came about after much experimentation (and school boy errors which I won't mention here).
+
+#### Combining WSO2 IS commonAuth and Spring Security Logout
+
+Our design is as follows. 
+
+Given that the commonAuthId cookie is associated with the WSO2 IS server, our Javascript will not have access to it, so, we can add a **LOGOUT** hyperlink to our html that will only show when our thymeleaf-extras-springsecurity4 config says its ok to do so (sec:authorize="isAuthenticated()"). The above leaves a question, and that is how will we perfrom the stock standard Spring Security logout process? The default way to do this is to add a form with hidden csrf attributes. The answer that I've come up with is that the **commonAuthCallerPath** dictates where the browser will be directed to (HTTP 302 response by WSO2 IS), so you 
+can just redirect to your own Controller method that is only available to authenticated users, this method, called logout in 
+AppController.java peforms server-side logout and redirects to index.html where the stock standard thymeleaf-extras-springsecurity4 config will let the user know that they are logged out.
 
 ### Browser issue
 
