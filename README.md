@@ -185,6 +185,17 @@ AppController.java performs server-side logout and redirects to index.html where
 
 Use Chrome or Firefox, you'll run into issues with Safari. More on this in time.
 
+## Adding some spit and polish with a health endpoint
+
+In AppHealthIndicator.java I've added Socket (TCP) level health checks for each external endpoint configured in application.yml
+
+The idea here is to get a health indicator rapidly, you don't want to waste time trawling log files to get such basic information. Just start the application and point your browser to:
+
+    http://localhost:8080/health
+    
+Note, critically, that you don't need to be authenticated to hit the health endpoint and that as per the Spring Boot Actuator docs
+that the endpoint has denial-of-service protection built in (as a challenge read up how this works).
+
 ## Technical References
 
 * [Thymeleaf + Spring Security integration basics](http://www.thymeleaf.org/doc/articles/springsecurity.html) - José Miguel Samper 
