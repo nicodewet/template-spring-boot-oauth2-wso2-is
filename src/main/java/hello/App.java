@@ -52,7 +52,7 @@ public class App extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.antMatcher("/**")
 			.authorizeRequests()
-				.antMatchers("/", "/login**", "/webjars/**").permitAll()
+				.antMatchers("/", "/health", "/login**", "/webjars/**").permitAll()
 				.anyRequest().authenticated()
 			.and().logout().logoutSuccessUrl("/").permitAll()
 			.and().csrf().csrfTokenRepository(new HttpSessionCsrfTokenRepository());
