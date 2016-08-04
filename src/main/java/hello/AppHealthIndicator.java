@@ -94,16 +94,22 @@ public class AppHealthIndicator implements HealthIndicator {
 		
 		boolean singleEndPointDown = false;
 		for (InetSocketAddress inetSocketAddress : endPoints) {
+			if (inetSocketAddress.isUnresolved()) {
+				logger.info("SKIPPING HEALTH CHECK FOR UNRESOLVED ENDPOINT: {}:{}", inetSocketAddress.getHostString(), inetSocketAddress.getPort());
+				break;
+			} else {
+				logger.info("END POINT CHECK FOR {} ({})", inetSocketAddress.getHostString(), inetSocketAddress.getAddress().getHostAddress());
+			}
 			Socket socket = null;
 			try {
 				socket = new Socket();
 				socket.connect(inetSocketAddress, 1000);
 				if (socket.isConnected()) {
-					logger.info("ENDPOINT UP: {}:{}", inetSocketAddress.getHostString(), inetSocketAddress.getPort());
+					logger.info("    ENDPOINT UP: {}:{}", inetSocketAddress.getHostString(), inetSocketAddress.getPort());
 					socket.close();
 				}
 			} catch (IOException e) {
-				logger.info("END POINT DOWN: {}:{}",inetSocketAddress.getHostString(), inetSocketAddress.getPort());
+				logger.info("    END POINT DOWN: {}:{}",inetSocketAddress.getHostString(), inetSocketAddress.getPort());
 				singleEndPointDown = true;
 			} finally {
 				if (socket != null && !socket.isClosed()) {
