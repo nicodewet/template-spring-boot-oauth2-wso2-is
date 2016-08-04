@@ -105,16 +105,22 @@ public class AppHealthIndicator implements HealthIndicator {
 				socket = new Socket();
 				socket.connect(inetSocketAddress, 1000);
 				if (socket.isConnected()) {
-					logger.info("    ENDPOINT UP: {}:{}", inetSocketAddress.getHostString(), inetSocketAddress.getPort());
+					logger.info("....ENDPOINT UP: {}:{}", inetSocketAddress.getHostString(), inetSocketAddress.getPort());
 					socket.close();
+					if (socket.isClosed()) {
+						logger.info("....done (socket closed)");
+					}
 				}
 			} catch (IOException e) {
-				logger.info("    END POINT DOWN: {}:{}",inetSocketAddress.getHostString(), inetSocketAddress.getPort());
+				logger.info("....END POINT DOWN: {}:{}",inetSocketAddress.getHostString(), inetSocketAddress.getPort());
 				singleEndPointDown = true;
 			} finally {
 				if (socket != null && !socket.isClosed()) {
 					try {
 						socket.close();
+						if (socket.isClosed()) {
+							logger.info("....done (socket closed)");
+						}
 					} catch (IOException e) {
 						// Nothing we can do here.
 						logger.info("IOException closing socket, nothing much to do from application layer. ", e);
